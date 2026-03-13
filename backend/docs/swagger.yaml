@@ -1,0 +1,82 @@
+basePath: /
+definitions:
+  api.Body:
+    properties:
+      long_url:
+        example: https://supathan.com/
+        type: string
+    required:
+    - long_url
+    type: object
+  models.Response:
+    properties:
+      data: {}
+      error:
+        example: Error Message. (If have any)
+        type: string
+      message:
+        example: Success Message. (If have any)
+        type: string
+      status:
+        example: success/failed
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact:
+    email: shariatullahpathan02@gmail.com
+    name: API Support
+    url: https://github.com/P47H4N
+  description: A professional URL Shortener service built with Go, Gin, GORM and Redis.
+  termsOfService: http://swagger.io/terms/
+  title: URL Shortener API
+  version: "1.0"
+paths:
+  /{code}:
+    get:
+      description: Redirects the user to the original long URL using the short code.
+      parameters:
+      - description: The 6-character short code
+        in: path
+        name: code
+        required: true
+        type: string
+      responses:
+        "301":
+          description: Redirecting...
+          schema:
+            type: string
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.Response'
+      summary: Redirect to Original URL
+      tags:
+      - URL Operations
+  /create:
+    post:
+      consumes:
+      - application/json
+      description: Takes a long URL and returns a unique 6-character short code.
+      parameters:
+      - description: Long URL Payload
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/api.Body'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Response'
+      summary: Create a short URL
+      tags:
+      - URL Operations
+swagger: "2.0"

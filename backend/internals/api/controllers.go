@@ -13,6 +13,10 @@ type APIControllers struct {
 	srv *APIServices
 }
 
+type Body struct {
+	LongURL string `json:"long_url" binding:"required" example:"https://supathan.com/"`
+}
+
 func NewControllers(srv *APIServices) *APIControllers {
 	return &APIControllers{
 		srv: srv,
@@ -20,9 +24,7 @@ func NewControllers(srv *APIServices) *APIControllers {
 }
 
 func (con *APIControllers) CreateShortUrl(c *gin.Context) {
-	var body struct {
-		LongURL string `json:"long_url" binding:"required"`
-	}
+	var body Body
 	if err := c.ShouldBindBodyWithJSON(&body); err != nil {
 		c.JSON(http.StatusBadRequest, models.Response{
 			Status: "failed",
@@ -61,7 +63,7 @@ func (con *APIControllers) RedirectUrl(c *gin.Context) {
 	if len(code) != helpers.Length {
 		c.JSON(http.StatusBadRequest, models.Response{
 			Status: "failed",
-			Error: "Invalid shorturl. Short URL must be in 6 characters.",
+			Error:  "Invalid shorturl. Short URL must be in 6 characters.",
 		})
 		return
 	}
@@ -69,7 +71,7 @@ func (con *APIControllers) RedirectUrl(c *gin.Context) {
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, models.Response{
 			Status: "failed",
-			Error: err.Error(),
+			Error:  err.Error(),
 		})
 		return
 	}
